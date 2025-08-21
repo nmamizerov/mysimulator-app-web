@@ -47,7 +47,7 @@ export const BlocksList = ({ blocks = [], refetch, customization = {} }) => {
   return (
     <div
       ref={containerRef}
-      className="mt-10 flex h-[calc(100vh-80px)] flex-col gap-8 overflow-y-auto"
+      className="mt-10 flex flex-col gap-8 overflow-y-auto"
     >
       {blocks.map((block) => (
         <BaseBlock

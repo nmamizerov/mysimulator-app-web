@@ -31,12 +31,14 @@ export const LessonCompletion = () => {
 
   useEffect(() => {
     if (course) {
+      const customization = course.customization?.[0];
+      if (!customization) return;
       if (screenWidth < 500) {
-        setMaxWidth(course.customization.main.maxPhoneWidth);
+        setMaxWidth(customization.main.maxPhoneWidth);
       } else if (screenWidth < 900) {
-        setMaxWidth(course.customization.main.maxTabletWidth);
+        setMaxWidth(customization.main.maxTabletWidth);
       } else {
-        setMaxWidth(course.customization.main.maxDesktopWidth);
+        setMaxWidth(customization.main.maxDesktopWidth);
       }
     }
   }, [course]);
@@ -76,9 +78,9 @@ export const LessonCompletion = () => {
         onComplete={handleSimulatorComplete}
         screenWidth={screenWidth}
         customization={{
-          ...course.customization,
+          ...course.customization?.[0],
           main: {
-            ...course.customization.main,
+            ...course.customization?.[0]?.main,
             backgroundColor: "transparent",
           },
         }}

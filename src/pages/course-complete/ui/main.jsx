@@ -24,8 +24,6 @@ export const CourseComplete = () => {
     }
   }, [lessons, course]);
 
-  console.log(course);
-
   if (!course || !lessons) {
     return <div></div>;
   }

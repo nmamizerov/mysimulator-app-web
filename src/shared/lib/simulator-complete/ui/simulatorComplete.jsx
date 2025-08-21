@@ -26,12 +26,13 @@ export const SimulatorComplete = ({
   useEffect(() => {
     setIsMobile(screenWidth < 500);
     if (simulator) {
+      const customization = simulator.customize?.[0];
       if (screenWidth < 500) {
-        setMaxWidth(simulator.customize.main.maxPhoneWidth);
+        setMaxWidth(customization.main.maxPhoneWidth);
       } else if (screenWidth < 900) {
-        setMaxWidth(simulator.customize.main.maxTabletWidth);
+        setMaxWidth(customization.main.maxTabletWidth);
       } else {
-        setMaxWidth(simulator.customize.main.maxDesktopWidth);
+        setMaxWidth(customization.main.maxDesktopWidth);
       }
     }
   }, [screenWidth, simulator]);
@@ -62,11 +63,11 @@ export const SimulatorComplete = ({
 
   return (
     <div
-      className="min-h-screen py-2"
+      className="py-2"
       style={{
         backgroundColor:
           customization?.main?.backgroundColor ||
-          simulator.customize?.main?.backgroundColor,
+          simulator.customize?.[0]?.main?.backgroundColor,
       }}
     >
       <div
@@ -82,12 +83,12 @@ export const SimulatorComplete = ({
             <WelcomeScreen
               refetch={refetch}
               welcomeScreen={simulator.welcome_screen_settings}
-              customization={simulator.customize.welcome_screen}
+              customization={simulator.customize?.[0]?.welcome_screen}
             />
           ) : (
             <div>
               <BlocksList
-                customization={customization || simulator.customize}
+                customization={customization || simulator.customize?.[0]}
                 refetch={refetch}
                 blocks={simulator?.user?.blocks}
               />

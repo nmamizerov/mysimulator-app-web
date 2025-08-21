@@ -1,4 +1,5 @@
 export const darkenColor = (color, percent) => {
+  if (!color) return null;
   const num = parseInt(color.replace("#", ""), 16);
   const r = (num >> 16) - Math.round((percent / 100) * 255);
   const g = ((num >> 8) & 0x00ff) - Math.round((percent / 100) * 255);
