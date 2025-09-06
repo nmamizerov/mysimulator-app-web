@@ -3,12 +3,13 @@ import { ColoredButton } from "@/shared/lib/simulator-complete";
 import { Input } from "@/shared/ui/input";
 import { useState } from "react";
 import { register } from "../api/auth";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/entities/session";
 
 export const Register = () => {
   const { data: course } = useCurrentCourse();
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     username: "",
@@ -23,6 +24,8 @@ export const Register = () => {
       const response = await register(form);
       if (response?.access_token) {
         setAuthToken(response.access_token);
+        // Перенаправляем на главную страницу курса после успешной регистрации
+        navigate("/");
       }
     } catch (e) {
       if (e?.response?.data) {

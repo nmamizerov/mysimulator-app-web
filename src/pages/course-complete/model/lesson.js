@@ -5,6 +5,7 @@ import { atom, useAtom, useAtomValue } from "jotai";
 const lessonsAtom = atomWithQuery(() => ({
   queryKey: ["lessons"],
   queryFn: getLessons,
+  enabled: true, // Будем управлять этим в компоненте
 }));
 
 const currentLessonAtom = atom();

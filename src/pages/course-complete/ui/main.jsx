@@ -5,12 +5,15 @@ import { useEffect, useState } from "react";
 import { LessonCompletion } from "./lessonCompletion";
 import { IoMdMenu } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
+import { useAuth } from "@/entities/session";
 
 import { darkenColor } from "@/shared/lib/simulator-complete";
 
 export const CourseComplete = () => {
   const [showDrawer, setShowDrawer] = useState(false);
   const { data: course } = useCurrentCourse();
+  const { isAuth } = useAuth();
+  // Загружаем lessons только если пользователь аутентифицирован
   const { data: lessons } = useLessons();
   const [currentLesson, setCurrentLesson] = useCurrentLesson();
 
@@ -23,6 +26,11 @@ export const CourseComplete = () => {
       else setCurrentLesson(lessons[0]);
     }
   }, [lessons, course]);
+
+  // Не рендерим компонент если пользователь не аутентифицирован
+  if (!isAuth) {
+    return <div></div>;
+  }
 
   if (!course || !lessons) {
     return <div></div>;
