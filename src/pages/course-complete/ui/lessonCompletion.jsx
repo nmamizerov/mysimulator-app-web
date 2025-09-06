@@ -31,7 +31,7 @@ export const LessonCompletion = () => {
 
   useEffect(() => {
     if (course) {
-      const customization = course.customization?.[0];
+      const customization = course.customization;
       if (!customization) return;
       if (screenWidth < 500) {
         setMaxWidth(customization.main.maxPhoneWidth);
@@ -78,9 +78,9 @@ export const LessonCompletion = () => {
         onComplete={handleSimulatorComplete}
         screenWidth={screenWidth}
         customization={{
-          ...course.customization?.[0],
+          ...course.customization,
           main: {
-            ...course.customization?.[0]?.main,
+            ...course.customization?.main,
             backgroundColor: "transparent",
           },
         }}

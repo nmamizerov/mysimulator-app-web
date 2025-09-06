@@ -19,8 +19,8 @@ export const Login = () => {
   const submit = async () => {
     setLoading(true);
     const response = await login(form);
-    if (response?.token) {
-      setAuthToken(response.token);
+    if (response?.access_token) {
+      setAuthToken(response.access_token);
     }
     setLoading(false);
   };

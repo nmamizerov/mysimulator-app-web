@@ -1,6 +1,6 @@
 import { api } from "@/shared/api";
 
 export const getCourse = async () => {
-  const resposne = await api.get(`/courses/get`);
-  return resposne.data;
+  const response = await api.get(`/course`);
+  return response.data;
 };

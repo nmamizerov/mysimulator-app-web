@@ -6,11 +6,11 @@ export const getLessons = async () => {
 };
 
 export const updateCurrentLesson = async (data) => {
-  const response = await api.patch("/lessons/current/", data);
+  const response = await api.patch("/lessons/current", data);
   return response.data;
 };
 
 export const updateCurrentSimulator = async (data) => {
-  const response = await api.patch("/lessons/current_simulator/", data);
+  const response = await api.patch("/lessons/current_simulator", data);
   return response.data;
 };

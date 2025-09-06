@@ -26,7 +26,7 @@ export const SimulatorComplete = ({
   useEffect(() => {
     setIsMobile(screenWidth < 500);
     if (simulator) {
-      const customization = simulator.customize?.[0];
+      const customization = simulator.customize;
       if (screenWidth < 500) {
         setMaxWidth(customization.main.maxPhoneWidth);
       } else if (screenWidth < 900) {
@@ -67,7 +67,7 @@ export const SimulatorComplete = ({
       style={{
         backgroundColor:
           customization?.main?.backgroundColor ||
-          simulator.customize?.[0]?.main?.backgroundColor,
+          simulator.customize?.main?.backgroundColor,
       }}
     >
       <div
@@ -83,12 +83,12 @@ export const SimulatorComplete = ({
             <WelcomeScreen
               refetch={refetch}
               welcomeScreen={simulator.welcome_screen_settings}
-              customization={simulator.customize?.[0]?.welcome_screen}
+              customization={simulator.customize?.welcome_screen}
             />
           ) : (
             <div>
               <BlocksList
-                customization={customization || simulator.customize?.[0]}
+                customization={customization || simulator.customize}
                 refetch={refetch}
                 blocks={simulator?.user?.blocks}
               />

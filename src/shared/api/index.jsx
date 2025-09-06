@@ -38,7 +38,9 @@ api.interceptors.response.use(
       (error.response.status === 401 || error.response.status === 403)
     ) {
       // Если статус 401, перенаправляем на страницу логина
-      console.log(error.response);
+      if (window.location.pathname !== "/auth/login") {
+        window.location.href = "/auth/login";
+      }
     }
     return Promise.reject(error);
   },

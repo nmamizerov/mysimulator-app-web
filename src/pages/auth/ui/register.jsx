@@ -21,8 +21,8 @@ export const Register = () => {
     setLoading(true);
     try {
       const response = await register(form);
-      if (response?.token) {
-        setAuthToken(response.token);
+      if (response?.access_token) {
+        setAuthToken(response.access_token);
       }
     } catch (e) {
       if (e?.response?.data) {
