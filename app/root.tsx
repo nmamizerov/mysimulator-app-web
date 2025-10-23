@@ -18,6 +18,9 @@ import { AppLayout } from "./core/layout/appLayout";
 import { useEffect } from "react";
 export async function loader({ request }: Route.LoaderArgs) {
   // Получаем заголовки из request
+
+  console.log(request.headers);
+  console.log("EMMEMEME");
   const host =
     request.headers.get("host") || request.headers.get("x-forwarded-host");
   const cookieHeader = request.headers.get("cookie");

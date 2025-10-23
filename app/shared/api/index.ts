@@ -12,22 +12,7 @@ const getBaseUrl = () => {
 
 export const baseApi = createApi({
   reducerPath: "api",
-  baseQuery: fetchBaseQuery({
-    baseUrl: getBaseUrl(),
-    credentials: "include",
-    prepareHeaders: (headers, { extra }) => {
-      // Если есть host в extra, добавляем его в headers
-      console.log(extra);
-      console.log("EMMEMEME");
-      const customHeaders = (extra as any)?.headers;
-      if (customHeaders) {
-        Object.entries(customHeaders).forEach(([key, value]) => {
-          headers.set(key, value as string);
-        });
-      }
-      return headers;
-    },
-  }),
+  baseQuery: fetchBaseQuery({ baseUrl: getBaseUrl(), credentials: "include" }),
   tagTypes: ["User", "Course", "Lessons", "Simulator", "CourseUser"],
 
   endpoints: () => ({}),
