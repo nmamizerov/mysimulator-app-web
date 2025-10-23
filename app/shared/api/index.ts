@@ -5,7 +5,11 @@ export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
     baseUrl:
-      typeof window === "undefined" ? import.meta.env.VITE_API_URL : "/api/v1",
+      typeof window === "undefined"
+        ? import.meta.env.VITE_API_URL
+        : window.location.host === "localhost"
+          ? "/api/v1"
+          : `${import.meta.env.VITE_API_URL}/api/v1`,
     credentials: "include",
   }),
   tagTypes: ["User", "Course", "Lessons", "Simulator", "CourseUser"],
