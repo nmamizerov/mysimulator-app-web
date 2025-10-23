@@ -27,8 +27,8 @@ export async function loader({ request }: Route.LoaderArgs) {
   const headers: Record<string, string> = {};
 
   if (host) {
-    headers["COURSE-HOST"] = host;
-    headers["X-COURSE-HOST"] = host;
+    headers["course-host"] = host;
+    headers["x-course-host"] = host;
   }
 
   if (cookieHeader) {
