@@ -15,8 +15,14 @@ export const LoginPage = () => {
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await login(data);
-    navigate("/");
+    try {
+      // Токен автоматически сохранится через onQueryStarted в session.api.ts
+      await login(data).unwrap();
+      navigate("/");
+    } catch (err) {
+      // Ошибка будет в error из useLoginMutation
+      console.error("Login failed:", err);
+    }
   };
 
   return (
@@ -64,8 +70,22 @@ export const LoginPage = () => {
               disabled={!data.username || !data.password || isLoading}
               fullWidth
             >
-              Войти
+              {isLoading ? "Вход..." : "Войти"}
             </Button>
+
+            {/* Отображение ошибки */}
+            {error && (
+              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-body-sm text-red-600">
+                  {"data" in error &&
+                  typeof error.data === "object" &&
+                  error.data !== null &&
+                  "detail" in error.data
+                    ? String(error.data.detail)
+                    : "Ошибка входа. Проверьте email и пароль."}
+                </p>
+              </div>
+            )}
           </form>
 
           {/* Разделитель */}

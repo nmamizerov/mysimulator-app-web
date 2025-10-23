@@ -15,7 +15,6 @@ export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
     baseUrl: getBaseUrl(),
-    credentials: "include",
     prepareHeaders: (headers, { endpoint, getState }) => {
       // Добавляем токен из Redux store
       const state = getState() as RootState;

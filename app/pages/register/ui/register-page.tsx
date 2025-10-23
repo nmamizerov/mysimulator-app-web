@@ -25,8 +25,14 @@ export const RegisterPage = () => {
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (data.password === rePassword) {
-      await register(data);
-      navigate("/");
+      try {
+        // Токен автоматически сохранится через onQueryStarted в session.api.ts
+        await register(data).unwrap();
+        navigate("/character");
+      } catch (err) {
+        // Ошибка будет в error из useRegisterMutation
+        console.error("Registration failed:", err);
+      }
     }
   };
 
@@ -80,11 +86,25 @@ export const RegisterPage = () => {
             <Button
               type="submit"
               variant="primary"
-              disabled={!validated}
+              disabled={!validated || isLoading}
               fullWidth
             >
-              Создать аккаунт
+              {isLoading ? "Создание аккаунта..." : "Создать аккаунт"}
             </Button>
+
+            {/* Отображение ошибки */}
+            {error && (
+              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-body-sm text-red-600">
+                  {"data" in error &&
+                  typeof error.data === "object" &&
+                  error.data !== null &&
+                  "detail" in error.data
+                    ? String(error.data.detail)
+                    : "Ошибка регистрации. Попробуйте снова."}
+                </p>
+              </div>
+            )}
           </form>
 
           {/* Разделитель */}
