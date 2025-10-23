@@ -1,22 +1,22 @@
-#Stage 1
-# FROM node:18-alpine as builder
-# WORKDIR /app
-# COPY package*.json .
-# COPY package-*.lock .
-# RUN npm install
-# COPY . .
-# RUN npm run build
+FROM node:20-alpine AS development-dependencies-env
+COPY . /app
+WORKDIR /app
+RUN npm ci
 
-#Stage 2
-FROM nginx:stable-alpine
-WORKDIR /usr/share/nginx/html
-RUN rm -rf ./*
-RUN rm /etc/nginx/conf.d/default.conf
-COPY dist .
-COPY nginx/nginx.conf /etc/nginx/conf.d
-EXPOSE 80
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+FROM node:20-alpine AS production-dependencies-env
+COPY ./package.json package-lock.json /app/
+WORKDIR /app
+RUN npm ci --omit=dev
 
+FROM node:20-alpine AS build-env
+COPY . /app/
+COPY --from=development-dependencies-env /app/node_modules /app/node_modules
+WORKDIR /app
+RUN npm run build
 
-# yarn build:simulator && docker buildx build --platform linux/amd64,linux/arm64 --push -t nmamizerov/mysimulator_web_simulator .
-# yarn build:course && docker buildx build --platform linux/amd64,linux/arm64 --push -t nmamizerov/mysimulator_web_course .
+FROM node:20-alpine
+COPY ./package.json package-lock.json /app/
+COPY --from=production-dependencies-env /app/node_modules /app/node_modules
+COPY --from=build-env /app/build /app/build
+WORKDIR /app
+CMD ["npm", "run", "start"]

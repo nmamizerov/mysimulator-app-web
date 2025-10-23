@@ -1,0 +1,404 @@
+---
+alwaysApply: true
+---
+
+# 🚀 Руководство по разработке MySimulator
+
+## 📁 Архитектура проекта
+
+Проект построен на основе **FSD (Feature-Sliced Design)** архитектуры с упрощенным подходом:
+
+```
+src/
+├── routes/                    # Слой роутинга (роуты приложения)
+├── app/                    # Слой приложения (конфигурация)
+│   ├── providers/          # Провайдеры (Redux, Router)
+│   ├── store/             # Redux store
+│   ├── router.tsx         # Конфигурация роутинга
+│   ├── App.tsx            # Корневой компонент
+│   └── index.ts           # Экспорты слоя
+├── pages/                 # Слой страниц (роутинг)
+│   ├── home/              # Главная страница
+│   ├── auth/              # Страницы аутентификации
+│   ├── dashboard/         # Личный кабинет
+│   ├── reports/           # Страницы отчетов
+│   └── payments/          # Страницы платежей
+├── shared/                # Общие модули
+│   ├── api/               # RTK Query API
+│   ├── ui/                # UI компоненты
+│   ├── lib/               # Утилиты и типы
+│   └── config/            # Конфигурация
+└── widgets/               # Сложные UI блоки
+    ├── header/            # Шапка сайта
+    ├── sidebar/           # Боковая панель
+    └── dashboard-stats/   # Статистика дашборда
+```
+
+## 🎨 Цветовая палитра
+
+**ВАЖНО:** Всегда используй только утвержденную цветовую палитру!
+
+## 📋 Правила создания файлов
+
+### 1. Слой `app/` - Конфигурация приложения
+
+**Когда использовать:** Настройка глобальных провайдеров, store, роутера
+
+```typescript
+// ✅ Хорошо
+src/app/
+├── providers/
+│   ├── index.tsx          # Главный провайдер
+│   └── theme-provider.tsx # Дополнительные провайдеры
+├── store/
+│   ├── index.ts           # Настройка store
+│   └── middleware.ts      # Кастомные middleware
+└── router.tsx             # Конфигурация роутов
+```
+
+**Правила:**
+
+- Один файл = одна ответственность
+- Всегда экспортируй через `index.ts`
+- Используй TypeScript для всех файлов
+
+### 2. Слой `pages/` - Страницы приложения
+
+**Когда использовать:** Создание новых страниц/роутов
+
+```typescript
+// ✅ Структура страницы
+src/pages/dashboard/
+├── index.ts               # Экспорт страницы
+├── ui/
+│   ├── dashboard-page.tsx # Основной компонент
+│   └── index.ts          # Экспорт UI
+└── model/                # Логика страницы (если нужна)
+    ├── use-dashboard.ts  # Хук для логики
+    └── index.ts         # Экспорт модели
+```
+
+**Правила:**
+
+- Название папки = путь в роуте (`dashboard` → `/dashboard`)
+- Основной компонент в `ui/page-name.tsx`
+- Логика в хуках в папке `model/`
+- Всегда добавляй в `src/app/router.tsx`
+
+**Пример создания новой страницы:**
+
+1. Создай папку: `src/pages/settings/`
+2. Создай UI: `src/pages/settings/ui/settings-page.tsx`
+3. Добавь экспорт: `src/pages/settings/index.ts`
+4. Добавь роут в `src/app/router.tsx`:
+
+```typescript
+{
+  path: 'settings',
+  Component: lazy(() => import('../pages/settings'))
+}
+```
+
+### 3. Слой `shared/` - Общие модули
+
+#### `shared/ui/` - UI компоненты
+
+**Когда использовать:** Переиспользуемые компоненты
+
+```typescript
+// ✅ Структура UI компонента
+src/shared/ui/button/
+├── index.ts              # Экспорт
+├── button.tsx           # Компонент
+├── button.stories.tsx   # Storybook (опционально)
+└── button.test.tsx      # Тесты (опционально)
+```
+
+**Правила именования компонентов:**
+
+- `Button`, `Input`, `Modal` - PascalCase
+- Используй составные имена: `FileUploader`, `DataTable`
+- Всегда типизируй props
+
+#### `shared/api/` - API слой
+
+**Когда использовать:** Работа с сервером
+
+```typescript
+// ✅ Структура API
+src/shared/api/
+├── index.ts              # Базовый API slice
+├── auth/                 # API для аутентификации
+│   ├── auth.api.ts      # RTK Query endpoints
+│   └── index.ts         # Экспорт
+└── reports/              # API для отчетов
+    ├── reports.api.ts   # RTK Query endpoints
+    └── index.ts         # Экспорт
+```
+
+**Пример создания API endpoints:**
+
+```typescript
+// src/shared/api/auth/auth.api.ts
+import { api } from "../index";
+import type { User, LoginRequest } from "../../lib/types";
+
+export const authApi = api.injectEndpoints({
+  endpoints: (build) => ({
+    login: build.mutation<User, LoginRequest>({
+      query: (credentials) => ({
+        url: "/auth/login",
+        method: "POST",
+        body: credentials,
+      }),
+      invalidatesTags: ["User"],
+    }),
+    getUser: build.query<User, void>({
+      query: () => "/auth/me",
+      providesTags: ["User"],
+    }),
+  }),
+});
+
+export const { useLoginMutation, useGetUserQuery } = authApi;
+```
+
+#### `shared/lib/` - Утилиты и типы
+
+```typescript
+// ✅ Структура lib
+src/shared/lib/
+├── types.ts              # Глобальные типы
+├── utils/                # Утилиты
+│   ├── format.ts        # Форматирование
+│   ├── validation.ts    # Валидация
+│   └── index.ts         # Экспорт
+└── hooks/                # Общие хуки
+    ├── use-local-storage.ts
+    └── index.ts
+```
+
+### 4. Слой `widgets/` - Сложные UI блоки
+
+**Когда использовать:** Композитные компоненты, которые используются в нескольких местах
+
+```typescript
+// ✅ Структура виджета
+src/widgets/header/
+├── index.ts              # Экспорт
+├── ui/
+│   ├── header.tsx       # Основной компонент
+│   ├── user-menu.tsx    # Дочерние компоненты
+│   └── index.ts         # Экспорт UI
+└── model/                # Логика виджета
+    ├── use-header.ts    # Хук для логики
+    └── index.ts         # Экспорт модели
+```
+
+## 🔄 Работа с состоянием (Redux Toolkit)
+
+### Создание нового slice:
+
+```typescript
+// src/shared/store/slices/auth.slice.ts
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import type { User } from "../../lib/types";
+
+interface AuthState {
+  user: User | null;
+  isAuthenticated: boolean;
+  loading: boolean;
+}
+
+const initialState: AuthState = {
+  user: null,
+  isAuthenticated: false,
+  loading: false,
+};
+
+export const authSlice = createSlice({
+  name: "auth",
+  initialState,
+  reducers: {
+    setUser: (state, action: PayloadAction<User>) => {
+      state.user = action.payload;
+      state.isAuthenticated = true;
+    },
+    logout: (state) => {
+      state.user = null;
+      state.isAuthenticated = false;
+    },
+  },
+});
+
+export const { setUser, logout } = authSlice.actions;
+export default authSlice.reducer;
+```
+
+Добавь в store:
+
+```typescript
+// src/app/store/index.ts
+import authReducer from "../../shared/store/slices/auth.slice";
+
+export const store = configureStore({
+  reducer: {
+    [reducerPath]: apiReducer,
+    auth: authReducer, // ← Добавь сюда
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(apiMiddleware),
+});
+```
+
+## 🛣️ Работа с роутингом (React Router v7)
+
+### Добавление нового роута:
+
+1. **Создай страницу** в `src/pages/`
+2. **Добавь компонент** в роутер:
+
+```typescript
+// src/app/router.tsx
+import { NewPage } from '../pages/new-page'
+
+// В массив children:
+{
+  path: 'new-page',
+  Component: NewPage,
+  // Если нужны данные на сервере:
+  loader: async ({ request, params }) => {
+    // Загрузка данных
+    return { data: 'some data' }
+  }
+}
+```
+
+### Навигация между страницами:
+
+```typescript
+import { Link, useNavigate } from "react-router";
+
+// Декларативная навигация
+<Link to="/dashboard" className="text-orange-500 hover:text-orange-600">
+  Перейти в дашборд
+</Link>;
+
+// Программная навигация
+const navigate = useNavigate();
+const handleClick = () => {
+  navigate("/dashboard");
+};
+```
+
+## 📝 Соглашения по коду
+
+### Именование файлов:
+
+- **Компоненты:** `kebab-case.tsx` → `user-profile.tsx`
+- **Хуки:** `use-kebab-case.ts` → `use-local-storage.ts`
+- **Типы:** `PascalCase` → `UserProfile`, `ApiResponse`
+- **Константы:** `UPPER_SNAKE_CASE` → `API_BASE_URL`
+
+### Структура компонента:
+
+```typescript
+// ✅ Правильная структура
+import type { ReactNode } from "react";
+import { useState } from "react";
+
+// Типы props
+interface ButtonProps {
+  children: ReactNode;
+  variant?: "primary" | "secondary";
+  size?: "sm" | "md" | "lg";
+  onClick?: () => void;
+  disabled?: boolean;
+}
+
+// Компонент
+export const Button = ({
+  children,
+  variant = "primary",
+  size = "md",
+  onClick,
+  disabled = false,
+}: ButtonProps) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleClick = async () => {
+    if (disabled || isLoading) return;
+
+    setIsLoading(true);
+    try {
+      await onClick?.();
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const baseClasses = "font-medium rounded-lg transition-colors";
+  const variantClasses = {
+    primary: "bg-orange-500 text-white hover:bg-orange-600",
+    secondary: "bg-gray-50 text-gray-900 hover:bg-gray-100",
+  };
+  const sizeClasses = {
+    sm: "px-3 py-1.5 text-sm",
+    md: "px-4 py-2 text-base",
+    lg: "px-6 py-3 text-lg",
+  };
+
+  return (
+    <button
+      className={`${baseClasses} ${variantClasses[variant]} ${
+        sizeClasses[size]
+      } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+      onClick={handleClick}
+      disabled={disabled || isLoading}
+    >
+      {isLoading ? "Загрузка..." : children}
+    </button>
+  );
+};
+```
+
+## 🚨 Важные правила
+
+### ❌ НЕ делай так:
+
+- Не смешивай бизнес-логику с UI компонентами
+- Не создавай новые цвета без согласования
+- Не импортируй из `pages/` в `shared/`
+- Не забывай про TypeScript типы
+- Не используй `any` тип
+
+### ✅ Делай так:
+
+- Выноси логику в хуки
+- Используй только утвержденную цветовую палитру
+- Создавай переиспользуемые компоненты в `shared/ui/`
+- Типизируй все props и данные
+- Используй осмысленные названия
+
+## 📚 Полезные команды
+
+```bash
+# Запуск dev сервера
+yarn dev
+
+# Сборка проекта
+yarn build
+
+# Линтинг
+yarn lint
+
+# Проверка типов
+yarn type-check
+
+# Тестирование
+yarn test
+```
+
+---
+
+**Помни:** Эта архитектура создана для масштабируемости. Начинай с простого, но всегда следуй правилам - это поможет избежать технического долга в будущем! 🚀
