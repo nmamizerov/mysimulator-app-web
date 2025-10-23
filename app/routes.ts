@@ -11,6 +11,9 @@ export default [
   // Страница персонажа
   route("character", "routes/character/route.tsx"),
 
+  // Страница профиля
+  route("profile", "routes/profile/route.tsx"),
+
   // Страница симулятора с динамическими параметрами
   route(
     "lesson/:lessonId/simulator/:simulatorId",

@@ -38,17 +38,19 @@ export const BlockItem = ({ block }: BlockItemProps) => {
     <>
       <div
         className={clsx(
-          block.block.tag && "bg-gray-200/80 p-4 rounded-2xl mb-6"
+          block.block.tag && "bg-gray-200/80 p-4 rounded-2xl md:mb-6 mb-4"
         )}
       >
         {block.block.tag && (
           <div className="font-medium mb-4 text-primary">{block.block.tag}</div>
         )}
         <div
-          className={clsx("flex gap-2 items-end", !block.block.tag && "mb-6")}
+          className={clsx(
+            "flex gap-2 items-end",
+            !block.block.tag && "md:mb-6 mb-4"
+          )}
         >
-          {/* Аватарка персонажа слева снизу */}
-          <div>
+          <div className="hidden md:block">
             <img
               src={
                 character.image.includes("http")
@@ -56,15 +58,22 @@ export const BlockItem = ({ block }: BlockItemProps) => {
                   : AllAvatars[character.image as keyof typeof AllAvatars]
               }
               alt={character.name}
-              className="w-16 h-16 rounded-full object-cover"
+              className="w-16 h-16 min-w-16 min-h-16 rounded-full object-cover"
             />
           </div>
-
-          {/* Контент справа */}
-          <div className="w-auto mb-8">
+          <div className="w-full md:w-auto md:mb-8 mb-4">
             {/* Бабл с контентом */}
-            <div className="bg-white border border-gray-200 rounded-2xl rounded-bl-none p-4 ">
-              <div className="flex gap-2 font-medium mb-3">
+            <div className="bg-white border border-gray-200 rounded-2xl md:rounded-bl-none p-4 ">
+              <div className="flex gap-2 items-end font-medium mb-5 md:mb-3">
+                <img
+                  src={
+                    character.image.includes("http")
+                      ? character.image
+                      : AllAvatars[character.image as keyof typeof AllAvatars]
+                  }
+                  alt={character.name}
+                  className="w-12 h-12  rounded-full object-cover"
+                />
                 <div className=" text-gray-900 ">{character.name},</div>
                 {/* Роль персонажа */}
                 <div className=" text-gray-500">{character.role}</div>
@@ -82,9 +91,14 @@ export const BlockItem = ({ block }: BlockItemProps) => {
       </div>
       {block.is_completed && block.answer && (
         <div className="flex gap-2 mb-6 items-end justify-end">
-          <div className="w-auto mb-8">
-            <div className="bg-white border border-gray-200 rounded-2xl rounded-br-none p-4 ">
-              <div className="flex gap-2 font-medium mb-3">
+          <div className="md:w-auto w-full md:mb-8 mb-4">
+            <div className="bg-white border border-gray-200 rounded-2xl md:rounded-br-none p-4 ">
+              <div className="flex gap-2 items-end font-medium mb-5  md:mb-3">
+                <img
+                  src={AllAvatars[user?.avatar as keyof typeof AllAvatars]}
+                  alt={character.name}
+                  className="w-12 h-12  rounded-full object-cover"
+                />
                 <div className=" text-gray-900 ">
                   {user?.first_name} {user?.last_name},
                 </div>
@@ -96,7 +110,7 @@ export const BlockItem = ({ block }: BlockItemProps) => {
               />
             </div>
           </div>
-          <div>
+          <div className="hidden md:block">
             <img
               src={AllAvatars[user?.avatar as keyof typeof AllAvatars]}
               alt={character.name}
