@@ -19,8 +19,6 @@ import { useEffect } from "react";
 export async function loader({ request }: Route.LoaderArgs) {
   // Получаем заголовки из request
 
-  console.log(request.headers);
-  console.log("EMMEMEME");
   const host =
     request.headers.get("host") || request.headers.get("x-forwarded-host");
   const cookieHeader = request.headers.get("cookie");
@@ -29,8 +27,8 @@ export async function loader({ request }: Route.LoaderArgs) {
   const headers: Record<string, string> = {};
 
   if (host) {
-    headers["host"] = host;
-    headers["x-forwarded-host"] = host;
+    headers["COURSE-HOST"] = host;
+    headers["X-COURSE-HOST"] = host;
   }
 
   if (cookieHeader) {
