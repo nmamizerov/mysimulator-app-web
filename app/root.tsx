@@ -17,9 +17,28 @@ import { courseApi, type Course } from "./entities/course";
 import { AppLayout } from "./core/layout/appLayout";
 import { useEffect } from "react";
 export async function loader({ request }: Route.LoaderArgs) {
-  const result = await store.dispatch(courseApi.endpoints.getCourse.initiate());
+  // Получаем заголовки из request
+  const host =
+    request.headers.get("host") || request.headers.get("x-forwarded-host");
+  const cookieHeader = request.headers.get("cookie");
 
-  console.log(result);
+  // Формируем заголовки для передачи в API
+  const headers: Record<string, string> = {};
+
+  if (host) {
+    headers["host"] = host;
+    headers["x-forwarded-host"] = host;
+  }
+
+  if (cookieHeader) {
+    headers["cookie"] = cookieHeader;
+  }
+
+  // Передаем заголовки в API запрос как параметр query
+  const result = await store.dispatch(
+    courseApi.endpoints.getCourse.initiate(headers)
+  );
+
   const url = new URL(request.url);
   const pathname = url.pathname;
 
@@ -27,7 +46,6 @@ export async function loader({ request }: Route.LoaderArgs) {
 
   // Если это не публичная страница - проверяем токен
   if (!publicPaths.includes(pathname)) {
-    const cookieHeader = request.headers.get("cookie");
     const hasToken = cookieHeader?.includes("access_token=");
 
     if (!hasToken) {
