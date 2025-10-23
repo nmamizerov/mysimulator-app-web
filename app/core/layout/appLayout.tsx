@@ -1,10 +1,14 @@
 import { Outlet, useLocation, useNavigate } from "react-router";
 import { useUserInfoQuery } from "@/entities/session";
 import { useEffect } from "react";
+import { useAuthGuard } from "@/shared/lib";
 
 export const AppLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Защита роутов - проверяем наличие токена на клиенте
+  useAuthGuard();
 
   const { data: user } = useUserInfoQuery(undefined, {
     skip:

@@ -1,11 +1,12 @@
 import { useLoginMutation, type LoginRequest } from "@/entities/session";
 import { Button, Input } from "@/shared/ui";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useLocation } from "react-router";
 import { useCourse } from "@/shared/lib";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const course = useCourse();
   const [data, setData] = useState<LoginRequest>({
     username: "",
@@ -18,7 +19,10 @@ export const LoginPage = () => {
     try {
       // Токен автоматически сохранится через onQueryStarted в session.api.ts
       await login(data).unwrap();
-      navigate("/");
+
+      // Перенаправляем туда, откуда пришел пользователь, или на главную
+      const from = (location.state as { from?: string })?.from || "/";
+      navigate(from, { replace: true });
     } catch (err) {
       // Ошибка будет в error из useLoginMutation
       console.error("Login failed:", err);

@@ -1,16 +1,13 @@
-import {
-  useLoginMutation,
-  useRegisterMutation,
-  type RegisterRequest,
-} from "@/entities/session";
+import { useRegisterMutation, type RegisterRequest } from "@/entities/session";
 import { Button, Input } from "@/shared/ui";
 import { useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useLocation } from "react-router";
 import { useCourse } from "@/shared/lib";
 
 export const RegisterPage = () => {
   const course = useCourse();
   const navigate = useNavigate();
+  const location = useLocation();
   const [data, setData] = useState<RegisterRequest>({
     username: "",
     password: "",
@@ -28,7 +25,8 @@ export const RegisterPage = () => {
       try {
         // Токен автоматически сохранится через onQueryStarted в session.api.ts
         await register(data).unwrap();
-        navigate("/character");
+        // После регистрации всегда идем на создание персонажа
+        navigate("/character", { replace: true });
       } catch (err) {
         // Ошибка будет в error из useRegisterMutation
         console.error("Registration failed:", err);

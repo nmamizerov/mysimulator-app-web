@@ -5,7 +5,6 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  redirect,
   useLoaderData,
 } from "react-router";
 
@@ -18,10 +17,8 @@ import { AppLayout } from "./core/layout/appLayout";
 import { useEffect } from "react";
 export async function loader({ request }: Route.LoaderArgs) {
   // Получаем заголовки из request
-
   const host =
     request.headers.get("host") || request.headers.get("x-forwarded-host");
-  const cookieHeader = request.headers.get("cookie");
 
   // Формируем заголовки для передачи в API
   const headers: Record<string, string> = {};
@@ -31,28 +28,10 @@ export async function loader({ request }: Route.LoaderArgs) {
     headers["x-course-host"] = host;
   }
 
-  if (cookieHeader) {
-    headers["cookie"] = cookieHeader;
-  }
-
   // Передаем заголовки в API запрос как параметр query
   const result = await store.dispatch(
     courseApi.endpoints.getCourse.initiate(headers)
   );
-
-  const url = new URL(request.url);
-  const pathname = url.pathname;
-
-  const publicPaths = ["/login", "/register"];
-
-  // Если это не публичная страница - проверяем токен
-  if (!publicPaths.includes(pathname)) {
-    const hasToken = cookieHeader?.includes("access_token=");
-
-    if (!hasToken) {
-      throw redirect("/login");
-    }
-  }
 
   return { course: result.data };
 }
