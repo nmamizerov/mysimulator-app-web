@@ -7,7 +7,7 @@ const getBaseUrl = () => {
   if (window.location.host === "localhost") {
     return "/api/v1";
   }
-  return `${import.meta.env.VITE_API_URL}/api/v1`;
+  return import.meta.env.VITE_API_URL;
 };
 
 export const baseApi = createApi({
