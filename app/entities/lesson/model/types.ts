@@ -1,5 +1,6 @@
 type SimulatorInLesson = { id: number; name: string };
 type LessonUser = {
+  id: number;
   completed: boolean;
   last_simulator: number | null;
   completed_simulators_count: number;

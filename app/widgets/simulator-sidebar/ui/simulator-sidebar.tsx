@@ -55,7 +55,7 @@ export const SimulatorSidebar = ({
           "lg:w-[320px] lg:relative lg:translate-x-0",
           // Мобайл: fixed + анимация
           "fixed top-0 left-0 h-screen w-[320px] z-50",
-          "bg-white border-r border-gray-200 overflow-y-auto flex-shrink-0",
+          "bg-white border-r border-gray-200 overflow-y-auto shrink-0",
           "transition-transform duration-300 ease-in-out",
           // Управление видимостью на мобилке
           isMobileMenuOpen
@@ -68,7 +68,7 @@ export const SimulatorSidebar = ({
           <div className="lg:hidden flex justify-end mb-4">
             <button
               onClick={onMobileMenuClose}
-              className="p-2 -mr-2 text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-lg transition-colors"
+              className="p-2 -mr-2 text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg transition-colors"
               aria-label="Закрыть меню"
             >
               <svg
@@ -133,7 +133,7 @@ export const SimulatorSidebar = ({
                         "w-6 h-6  flex items-center justify-center rounded-full border-2 border-primary",
                         isLessonActive && !isCompleted && "bg-white",
                         isCompleted && "bg-primary",
-                        !isAvailable && "bg-primary/60 !border-none"
+                        !isAvailable && "bg-primary/60 border-none!"
                       )}
                     >
                       {isCompleted && (
@@ -159,7 +159,7 @@ export const SimulatorSidebar = ({
                       className={clsx(
                         "text-subtitle-1 text-gray-700  flex-1",
                         isLessonActive && "text-primary",
-                        !isAvailable && "!text-gray-400"
+                        !isAvailable && "text-gray-400!"
                       )}
                     >
                       {lesson.name}
@@ -197,10 +197,10 @@ export const SimulatorSidebar = ({
                             to={`/lesson/${lesson.id}/simulator/${simulator.id}`}
                             onClick={handleLinkClick}
                             className={clsx(
-                              "block rounded-lg transition-colors text-body-sm",
+                              "block hover:text-primary rounded-lg transition-colors text-body-sm",
                               isActive
-                                ? " text-primary font-medium"
-                                : "text-gray-700 hover:bg-red-500"
+                                ? "text-primary font-medium"
+                                : "text-gray-700"
                             )}
                           >
                             {simulator.name}

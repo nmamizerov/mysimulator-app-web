@@ -29,7 +29,7 @@ export const MobileHeader = ({ course, onMenuClick }: MobileHeaderProps) => {
         {/* Бургер-кнопка */}
         <button
           onClick={onMenuClick}
-          className="p-2 -mr-2 text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-lg transition-colors"
+          className="p-2 -mr-2 text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg transition-colors"
           aria-label="Открыть меню"
           tabIndex={0}
         >

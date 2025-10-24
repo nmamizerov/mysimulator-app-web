@@ -1,105 +1,124 @@
-import type { TextareaHTMLAttributes, ReactNode } from "react";
-import { forwardRef, useState } from "react";
-import { clsx } from "clsx";
+import { useState, useRef, type TextareaHTMLAttributes } from "react";
 
-interface TextareaProps
-  extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "onSubmit"> {
-  error?: boolean;
-  helperText?: string;
-  rightElement?: ReactNode;
-  onSubmit?: (value: string) => void;
-  autoExpand?: boolean;
+interface AutoResizeTextareaProps
+  extends Omit<
+    TextareaHTMLAttributes<HTMLTextAreaElement>,
+    "rows" | "onChange"
+  > {
+  onSend?: (value: string) => void;
+  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  value?: string;
 }
 
-export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  (
-    {
-      error = false,
-      helperText,
-      rightElement,
-      className = "",
-      disabled = false,
-      onSubmit,
-      autoExpand = false,
-      rows: initialRows = 1,
-      onKeyDown,
-      ...props
-    },
-    ref
-  ) => {
-    const [rows, setRows] = useState(initialRows);
+export const Textarea = ({
+  onSend,
+  placeholder = "Напишите сообщение...",
+  value: controlledValue,
+  onChange: controlledOnChange,
+  className = "",
+  disabled,
+  ...textareaProps
+}: AutoResizeTextareaProps) => {
+  const [internalValue, setInternalValue] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      // Автоматическое расширение при нажатии Enter
-      if (
-        autoExpand &&
-        e.key === "Enter" &&
-        !e.shiftKey &&
-        !e.ctrlKey &&
-        !e.metaKey
-      ) {
-        e.preventDefault();
-        setRows((prev) => prev + 1);
+  // Определяем, контролируемый или неконтролируемый компонент
+  const isControlled = controlledValue !== undefined;
+  const value = isControlled ? controlledValue : internalValue;
+
+  // Функция для автоматического изменения размера
+  const adjustHeight = () => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    // Сбрасываем высоту для корректного пересчета
+    textarea.style.height = "auto";
+
+    // Устанавливаем новую высоту на основе scrollHeight
+    const newHeight = Math.min(textarea.scrollHeight, 120); // макс 120px (5 строк)
+    textarea.style.height = `${newHeight}px`;
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (!isControlled) {
+      setInternalValue(e.target.value);
+    }
+
+    // Вызываем adjustHeight только после обновления значения
+    requestAnimationFrame(() => {
+      adjustHeight();
+    });
+
+    controlledOnChange?.(e);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+    textareaProps.onKeyDown?.(e);
+  };
+
+  const handleSend = () => {
+    if (value.trim() && onSend) {
+      onSend(value);
+      if (!isControlled) {
+        setInternalValue("");
+        // Сбрасываем высоту после очистки
+        requestAnimationFrame(() => {
+          if (textareaRef.current) {
+            textareaRef.current.style.height = "auto";
+          }
+        });
       }
+    }
+  };
 
-      // Отправка формы при Cmd/Ctrl + Enter
-      if (onSubmit && e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
-        e.preventDefault();
-        const value = (e.target as HTMLTextAreaElement).value;
-        if (value.trim()) {
-          onSubmit(value.trim());
-        }
-      }
+  return (
+    <div className="relative w-full">
+      <textarea
+        ref={textareaRef}
+        value={value}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        placeholder={placeholder}
+        disabled={disabled}
+        rows={1}
+        className={`w-full resize-none overflow-y-auto px-4 py-3 pr-12 border border-gray-300 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+        style={{
+          lineHeight: "24px",
+          minHeight: "48px", // минимальная высота (1 строка с padding)
+          maxHeight: "120px", // максимальная высота (5 строк)
+        }}
+        {...textareaProps}
+      />
 
-      // Вызываем переданный onKeyDown, если есть
-      onKeyDown?.(e);
-    };
-
-    const textareaClasses = clsx(
-      // Base styles
-      "w-full px-4 py-3 bg-white border rounded-lg text-body text-gray-900 placeholder-gray-400 transition-all duration-200",
-      // Focus styles
-      "focus:outline-none focus:ring-2 focus:border-transparent",
-      // Normal state
-      { "border-gray-200 focus:ring-orange-500": !error && !disabled },
-      // Error state
-      { "border-red-500 focus:ring-red-500": error && !disabled },
-      // Disabled state
-      { "opacity-50 cursor-not-allowed bg-gray-50": disabled },
-      // Right element padding
-      { "pr-12": rightElement },
-      // Resize
-      "resize-none",
-      // Custom className
-      className
-    );
-
-    return (
-      <div className="relative">
-        <textarea
-          ref={ref}
-          disabled={disabled}
-          rows={rows}
-          onKeyDown={handleKeyDown}
-          className={textareaClasses}
-          {...props}
-        />
-        {rightElement && (
-          <div className="absolute right-3 bottom-3">{rightElement}</div>
-        )}
-        {helperText && (
-          <p
-            className={clsx("mt-1.5 text-caption", {
-              "text-red-500": error,
-              "text-gray-500": !error,
-            })}
-          >
-            {helperText}
-          </p>
-        )}
-      </div>
-    );
-  }
-);
-
-Textarea.displayName = "Textarea";
+      <button
+        onClick={handleSend}
+        disabled={!value.trim() || disabled}
+        type="button"
+        className={`flex cursor-pointer absolute right-1 bottom-[6px] items-center justify-center w-10 h-10 rounded-lg transition-all duration-200 self-end mb-1 ${
+          value.trim() && !disabled
+            ? "text-white bg-primary"
+            : "opacity-0 pointer-events-none cursor-not-allowed"
+        }`}
+        aria-label="Отправить сообщение"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <line x1="22" y1="2" x2="11" y2="13" />
+          <polygon points="22 2 15 22 11 13 2 9 22 2" />
+        </svg>
+      </button>
+    </div>
+  );
+};

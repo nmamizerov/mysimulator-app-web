@@ -17,7 +17,6 @@ export const AnswerField = ({
   answerOptions,
 }: AnswerFieldProps) => {
   const [completeBlock, { isLoading }] = useCompleteBlockMutation();
-  const [inputValue, setInputValue] = useState("");
 
   const handleComplete = async (answer: string) => {
     try {
@@ -25,7 +24,6 @@ export const AnswerField = ({
         userBlockId,
         data: { answer, id: userBlockId },
       }).unwrap();
-      setInputValue("");
     } catch (error) {
       console.error("Ошибка при завершении блока:", error);
     }
@@ -36,7 +34,7 @@ export const AnswerField = ({
     return (
       <div className="mt-4">
         <Button
-          onClick={() => handleComplete("")}
+          onClick={() => handleComplete(nextButtonText || "")}
           disabled={isLoading}
           variant="primary"
         >
@@ -67,35 +65,11 @@ export const AnswerField = ({
   // Тип: Поле ввода
   if (completeType === "text") {
     return (
-      <div className="mt-4">
+      <div className="mt-4 w-full">
         <Textarea
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
           placeholder="Введите ваш ответ..."
           disabled={isLoading}
-          autoExpand
-          onSubmit={handleComplete}
-          rightElement={
-            <button
-              onClick={() => {
-                if (inputValue.trim()) {
-                  handleComplete(inputValue);
-                }
-              }}
-              disabled={isLoading || !inputValue.trim()}
-              className="w-8 h-8 flex items-center justify-center bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              aria-label="Отправить"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="w-5 h-5"
-              >
-                <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
-              </svg>
-            </button>
-          }
+          onSend={handleComplete}
         />
       </div>
     );

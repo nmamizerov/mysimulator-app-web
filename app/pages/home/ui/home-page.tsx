@@ -79,6 +79,8 @@ export const HomePage = () => {
           lessonUser.last_simulator!
         );
       }
+    } else {
+      handleStartLesson(lessons?.[0]?.id!);
     }
   };
 
