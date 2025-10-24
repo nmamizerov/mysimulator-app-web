@@ -105,7 +105,7 @@ export const SimulatorSidebar = ({
           <h2 className="text-h5 text-primary mb-3">{course.name}</h2>
 
           <div className="mb-20 mt-5">
-            <Progress progress={courseUser?.progress || 0} />
+            <Progress progress={courseUser?.progress || 2} />
             <span className="text-caption text-gray-500">
               {courseUser?.progress || 0}% завершено
             </span>

@@ -118,7 +118,7 @@ export const HomePage = () => {
           </p>
           <div className="flex justify-between items-end">
             <div className="md:w-[336px] w-1/2 mb-4">
-              <Progress progress={courseUser.progress || 0} />
+              <Progress progress={courseUser.progress || 2} />
             </div>
             <StartButton onClick={continueCourse} />
           </div>
@@ -134,7 +134,10 @@ export const HomePage = () => {
                   <img
                     src={lesson.image}
                     alt={lesson.name}
-                    className="w-full h-[150px] object-cover rounded-xl mb-5"
+                    className={clsx(
+                      "w-full h-[150px] object-cover rounded-xl mb-5",
+                      !lesson.is_available && "opacity-50"
+                    )}
                   />
                 ) : (
                   <div className="mb-5 h-[150px] rounded-xl bg-gray-200"></div>
