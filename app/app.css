@@ -7,6 +7,8 @@
   /* Динамические цвета из loader */
   --color-primary: var(--color-primary, #009dc5);
   --color-secondary: var(--color-secondary, #2196F3);
+  --color-success: var(--color-success, #009dc5);
+  --color-error: var(--color-error, #f44336);
 }
 
 /* Шрифтовая система типографики */

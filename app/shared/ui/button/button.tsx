@@ -31,25 +31,25 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const buttonClasses = clsx(
       // Base styles
-      "inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg font-medium transition-all duration-200 outline-none",
+      "inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg font-medium transition-all duration-200 outline-none border-2",
       // Focus styles
       "focus:ring-2 focus:ring-offset-2",
       // Variant styles
       {
         // Primary
-        "bg-primary text-white hover:bg-primary/90 focus:ring-primary/50":
+        "border-transparent bg-primary text-white hover:bg-primary/90 focus:ring-primary/50":
           variant === "primary",
         // Secondary
-        "bg-secondary text-white hover:bg-secondary/90 focus:ring-secondary/50":
+        "border-transparent bg-secondary text-white hover:bg-secondary/70 focus:ring-secondary/50":
           variant === "secondary",
         // Outline
-        "border-2 border-primary text-primary hover:bg-primary hover:text-white focus:ring-primary/50":
+        "border-primary text-primary hover:bg-primary/80 hover:border-primary/80 hover:text-white focus:ring-primary/50":
           variant === "outline",
         // Ghost
-        "text-primary hover:bg-primary/10 focus:ring-primary/50":
+        "border-transparent text-primary hover:bg-primary/10 focus:ring-primary/50":
           variant === "ghost",
         // Danger
-        "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500/50":
+        "border-transparent bg-red-600 text-white hover:bg-red-700 focus:ring-red-500/50":
           variant === "danger",
       },
       // Size styles

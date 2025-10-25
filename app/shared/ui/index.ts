@@ -5,3 +5,5 @@ export { Card } from "./card";
 export { Progress } from "./progress";
 export { Textarea } from "./textarea";
 export { LogoutButton } from "./logout-button";
+export { AnswerOption } from "./answer-option";
+export type { AnswerStatus } from "./answer-option";

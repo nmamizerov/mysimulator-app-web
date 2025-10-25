@@ -106,11 +106,11 @@ export const HomePage = () => {
     <div>
       <AppHeader />
       <div className="container max-w-4xl mx-auto px-5">
-        <h1 className="text-h3 !font-extralight mt-10 mb-6">
+        <h1 className="text-h3 font-extralight! mt-10 mb-6">
           Добро пожаловать, {user.first_name}!
         </h1>
         <Card className="mb-5  shadow-[3px_3px_5px_0px_rgba(149,149,149,0.25)]">
-          <h2 className="text-h5 pt-2 text-primary !font-bold mb-1">
+          <h2 className="text-h5 pt-2 text-primary font-bold! mb-1">
             {course.name}
           </h2>
           <p className="text-caption text-[#6A6B70] mb-4">

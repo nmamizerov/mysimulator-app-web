@@ -15,6 +15,22 @@ import { store } from "./core/store";
 import { courseApi, type Course } from "./entities/course";
 import { AppLayout } from "./core/layout/appLayout";
 import { useEffect } from "react";
+
+const colors = {
+  primary: {
+    default: "#1C8AA8",
+  },
+  secondary: {
+    default: "#ABCDD6",
+  },
+  success: {
+    default: "#14A48D",
+  },
+  error: {
+    default: "#FF7070",
+  },
+};
+
 export async function loader({ request }: Route.LoaderArgs) {
   // Получаем заголовки из request
   const host =
@@ -111,17 +127,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
     }
   }, [course?.favicon]);
 
-  const colorStyles = course?.colors
-    ? (Object.fromEntries(
-        Object.entries(course.colors).map(([key, value]) => [
-          `--color-${key}`,
-          value,
-        ])
-      ) as React.CSSProperties)
-    : undefined;
+  const colorsStyles = Object.fromEntries(
+    Object.entries(colors).map(([key, value]) => [
+      `--color-${key}`,
+      value.default,
+    ])
+  ) as React.CSSProperties;
 
   return (
-    <html lang="en" className="bg-gray-50" style={colorStyles}>
+    <html lang="en" className="bg-gray-50" style={colorsStyles}>
       <head suppressHydrationWarning>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
