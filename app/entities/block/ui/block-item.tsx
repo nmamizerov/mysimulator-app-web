@@ -245,9 +245,12 @@ export const BlockItem = ({ block }: BlockItemProps) => {
             }
           />
         )}
-        {checkType === "gpt_check" && block.is_completed && block.answer && (
-          <UserMessage answer={block.answer} user={user} />
-        )}
+        {checkType === "gpt_check" &&
+          block.is_completed &&
+          block.answer &&
+          blockData.show_user_answer && (
+            <UserMessage answer={block.answer} user={user} />
+          )}
         {blockData.text_after_answer && (
           <div
             className="border-primary mt-5 border-l-3 pl-2 text-gray-800"
@@ -256,9 +259,12 @@ export const BlockItem = ({ block }: BlockItemProps) => {
         )}
       </BlockWrapper>
 
-      {block.is_completed && block.answer && !checkType && (
-        <UserMessage answer={block.answer} user={user} />
-      )}
+      {block.is_completed &&
+        block.answer &&
+        !checkType &&
+        blockData.show_user_answer && (
+          <UserMessage answer={block.answer} user={user} />
+        )}
 
       {!block.is_completed && !checkType && (
         <AnswerSection

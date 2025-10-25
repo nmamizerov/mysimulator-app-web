@@ -9,6 +9,7 @@ export type Block = {
   text: string;
   complete_type: "button" | "text" | "answers";
   is_task: boolean;
+  show_user_answer: boolean;
   text_after_answer?: string;
   check_type?: null | "single_choice" | "multiple_choice" | "gpt_check";
   next_button_text?: string;
